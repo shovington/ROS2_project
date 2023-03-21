@@ -7,9 +7,17 @@ int enB = 3;
 int in3 = 5;
 int in4 = 4;
 
+int cmd [2];
+int ByteReceived = 0;
+const char *delimiter =",";
+char *token;
+const char * searchedPattern1 = "CMD";
+
 void setup() {
 
-	Serial.begin(9600);
+	Serial.begin(115200);
+
+  Serial.setTimeout(100);
 	// Set all the motor control pins to outputs
 	pinMode(enA, OUTPUT);
 	pinMode(enB, OUTPUT);
@@ -19,7 +27,6 @@ void setup() {
 	pinMode(in4, OUTPUT);
 
   pinMode(10, OUTPUT);
-	digitalWrite(10, LOW);
 	// Turn off motors - Initial state
 	digitalWrite(in1, LOW);
 	digitalWrite(in2, LOW);
@@ -30,84 +37,57 @@ void setup() {
 
 void loop() {
 
-	// while (Serial.available() == 0) {}     //wait for data available
-	// 	String teststr = Serial.readString();  //read until timeout
-	// 	Serial.print(teststr+"reply");
+  if (Serial.available() > 0) {
+    // Serial.print(Serial.available());
+    String incomingString = Serial.readStringUntil('>');
 
-  // int incomingByte = 0;
+    char str_array[incomingString.length()+1];
+    incomingString.toCharArray(str_array, incomingString.length()+1);
+    token = strtok(str_array, delimiter);
 
-  // if (Serial.available() > 0) {
-  //   // read the incoming byte:
-  //   incomingByte = Serial.read();
-
-  //   // say what you got:
-  //   Serial.print("I received: ");
-  //   Serial.println(incomingByte, DEC);
-  // }
-  String incomingString = Serial.readStringUntil('0');
-  Serial.print("test : " + incomingString + " :\n");
-	// directionControl();
-	// delay(1000);
-	// speedControl();
-	// delay(1000);
+    char * pointer1 = strstr(token, searchedPattern1);
+    if(pointer1)
+    {
+      token=strtok(NULL, delimiter);
+      int i = 0;
+      while (token != NULL) {
+        cmd[i] = atoi(token);
+        token=strtok(NULL, delimiter);
+        i++;
+      }
+    }
+  }
+	speedControl(cmd);
 
 
 }
 
-// This function lets you control spinning direction of motors
-void directionControl() {
-	// Set motors to maximum speed
-	// For PWM maximum possible values are 0 to 255
-	analogWrite(enA, 255);
-	analogWrite(enB, 255);
+void speedControl(int* cmd) {
 
-	// Turn on motor A & B
-	digitalWrite(in1, HIGH);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, HIGH);
-	digitalWrite(in4, LOW);
-	delay(2000);
-	
-	// Now change motor directions
-	digitalWrite(in1, LOW);
-	digitalWrite(in2, HIGH);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, HIGH);
-	delay(2000);
-	
-	// Turn off motors
-	digitalWrite(in1, LOW);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, LOW);
-}
+  if (cmd[0] >= 0)
+  {
+    digitalWrite(in1, HIGH);
+    digitalWrite(in2, LOW);
+    analogWrite(enA, cmd[0]);
+  }
+  else
+  {
+    digitalWrite(in1, LOW);
+    digitalWrite(in2, HIGH);
+    analogWrite(enA, -cmd[0]);
+  }
 
-// This function lets you control speed of the motors
-void speedControl() {
-	// Turn on motors
-	digitalWrite(in1, LOW);
-	digitalWrite(in2, HIGH);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, HIGH);
-	
-	// Accelerate from zero to maximum speed
-	for (int i = 0; i < 256; i++) {
-		analogWrite(enA, i);
-		analogWrite(enB, i);
-		delay(20);
-	}
-	
-	// Decelerate from maximum speed to zero
-	for (int i = 255; i >= 0; --i) {
-		analogWrite(enA, i);
-		analogWrite(enB, i);
-		delay(20);
-	}
-	
-	// Now turn off motors
-	digitalWrite(in1, LOW);
-	digitalWrite(in2, LOW);
-	digitalWrite(in3, LOW);
-	digitalWrite(in4, LOW);
+  if (cmd[1] >= 0)
+  {
+    digitalWrite(in3, HIGH);
+    digitalWrite(in4, LOW);
+    analogWrite(enB, cmd[1]);
+  }
+  else
+  {
+    digitalWrite(in3, LOW);
+    digitalWrite(in4, HIGH);
+    analogWrite(enB, -cmd[1]);
+  }
 }
 
