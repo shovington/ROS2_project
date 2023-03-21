@@ -1,11 +1,21 @@
+#include <timer.h>
+#include <timerManager.h>
+
 // Motor A connections
 int enA = 9;
 int in1 = 8;
 int in2 = 7;
 // Motor B connections
-int enB = 3;
+int enB = 10;
 int in3 = 5;
 int in4 = 4;
+
+Timer timer;
+const int ENC1 = 2;
+const int ENC2 = 3;
+int enc_ctr1 = 0;
+int enc_ctr2 = 0;
+
 
 int cmd [2];
 int ByteReceived = 0;
@@ -26,12 +36,17 @@ void setup() {
 	pinMode(in3, OUTPUT);
 	pinMode(in4, OUTPUT);
 
-  pinMode(10, OUTPUT);
 	// Turn off motors - Initial state
 	digitalWrite(in1, LOW);
 	digitalWrite(in2, LOW);
 	digitalWrite(in3, LOW);
 	digitalWrite(in4, LOW);
+
+  attachInterrupt(digitalPinToInterrupt(ENC1), count_enc1, RISING);
+  attachInterrupt(digitalPinToInterrupt(ENC2), count_enc2, RISING);
+  timer.setInterval(50);
+  timer.setCallback(RPM);
+  timer.start();
 
 }
 
@@ -59,7 +74,26 @@ void loop() {
   }
 	speedControl(cmd);
 
+  timer.update();
 
+
+}
+
+void count_enc1() {
+  enc_ctr1++;
+}
+
+void count_enc2() {
+  enc_ctr2++;
+}
+
+void RPM() {
+  Serial.print("VEL,");
+  Serial.print(enc_ctr1); // count /20 ticks/tour * 20Hz
+  Serial.print(",");
+  Serial.println(enc_ctr2);
+  enc_ctr1 = 0;
+  enc_ctr2 = 0;
 }
 
 void speedControl(int* cmd) {
