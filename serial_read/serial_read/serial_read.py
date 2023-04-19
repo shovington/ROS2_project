@@ -29,8 +29,8 @@ class SerialRead(Node):
     def joy_callback(self, msg):
         self.joystick_input = msg
 
-        right = self.joystick_input.axes[4]
-        left = self.joystick_input.axes[1]
+        left = self.joystick_input.axes[4]
+        right = self.joystick_input.axes[1]
         right = int(right*255)
         left = int(left*255)
         # right_sign = self.joystick_input.axes[4]/right
