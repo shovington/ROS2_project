@@ -28,6 +28,8 @@ SoftTimer timerPulse_;              // chronometre pour la duree d'un pulse
 
 uint16_t pulseTime_ = 0;            // temps dun pulse en ms
 float PWM_des_ = 0;                 // PWM desire pour les moteurs
+float left_command_ = 0;            // commande pour la roue gauche
+float right_command_ = 0;           // commande pour la roue droite
 
 
 float Axyz[3];                      // tableau pour accelerometre
@@ -80,14 +82,16 @@ void sendMsg(){
   StaticJsonDocument<500> doc;
   // Elements du message
 
-  doc["time"] = millis();
-  doc["PWM_des"] = PWM_des_;
-  doc["accelX"] = imu_.getAccelX();
-  doc["accelY"] = imu_.getAccelY();
-  doc["accelZ"] = imu_.getAccelZ();
-  doc["gyroX"] = imu_.getGyroX();
-  doc["gyroY"] = imu_.getGyroY();
-  doc["gyroZ"] = imu_.getGyroZ();
+  // doc["time"] = millis();
+  // doc["PWM_des"] = PWM_des_;
+  // doc["accelX"] = imu_.getAccelX();
+  // doc["accelY"] = imu_.getAccelY();
+  // doc["accelZ"] = imu_.getAccelZ();
+  // doc["gyroX"] = imu_.getGyroX();
+  // doc["gyroY"] = imu_.getGyroY();
+  // doc["gyroZ"] = imu_.getGyroZ();
+  doc["right"] = right_command_;
+  doc["left"] = left_command_;
 
   // Serialisation
   serializeJson(doc, Serial);
@@ -113,8 +117,13 @@ void readMsg(){
   }
   
   // Analyse des éléments du message message
-  parse_msg = doc["PWM_des"];
+  parse_msg = doc["left"];
   if(!parse_msg.isNull()){
-     PWM_des_ = doc["pulsePWM"].as<float>();
+     left_command_ = doc["left"].as<float>();
+  }
+
+  parse_msg = doc["right"];
+  if(!parse_msg.isNull()){
+     right_command_ = doc["right"].as<float>();
   }
 }
