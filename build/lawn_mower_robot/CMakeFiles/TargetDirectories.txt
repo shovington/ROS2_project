@@ -1,9 +1,0 @@
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/uninstall.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/lawn_mower_robot_uninstall.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/test.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/edit_cache.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/rebuild_cache.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/list_install_components.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/install.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/install/local.dir
-/home/samuel/ros2_ws/src/ROS2_project/build/lawn_mower_robot/CMakeFiles/install/strip.dir

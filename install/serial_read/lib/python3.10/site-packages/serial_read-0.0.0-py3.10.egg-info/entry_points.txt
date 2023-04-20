@@ -1,3 +1,0 @@
-[console_scripts]
-serial_read = serial_read.serial_read:main
-
